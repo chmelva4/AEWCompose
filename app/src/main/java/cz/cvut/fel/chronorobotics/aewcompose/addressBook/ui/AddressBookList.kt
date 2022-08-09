@@ -170,8 +170,8 @@ fun AddressBookListPreview() {
     AEWComposeTheme {
         AddressBookItemList(
             addresses = listOf(
-                DBAddressBookItem("0x1C727a55eA3c11B0ab7D3a361Fe0F3C47cE6de5d", "Jhon Doe1"),
-                DBAddressBookItem("0x1C727a55eA3c11B0ab7D3a361Fe0F3C47cE6de5d", "Jhon Doe 2"),
+                DBAddressBookItem(0, "0x1C727a55eA3c11B0ab7D3a361Fe0F3C47cE6de5d", "Jhon Doe1"),
+                DBAddressBookItem(0, "0x1C727a55eA3c11B0ab7D3a361Fe0F3C47cE6de5d", "Jhon Doe 2"),
             ),
         )
     }
