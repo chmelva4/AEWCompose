@@ -2,13 +2,8 @@ package cz.cvut.fel.chronorobotics.aewcompose.addressBook.ui
 
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.navigation.fragment.DialogFragmentNavigatorDestinationBuilder
 import cz.cvut.fel.chronorobotics.aewcompose.addressBook.data.DBAddressBookItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
@@ -21,7 +16,7 @@ fun AddressBookScreen() {
     val items by vm.getAddressBookItems().collectAsState(initial = listOf())
     val scope = rememberCoroutineScope()
 
-    var selectedItem: DBAddressBookItem? by remember {
+    var selectedItem: DBAddressBookItem? by rememberSaveable {
         mutableStateOf(null)
     }
 
@@ -29,13 +24,9 @@ fun AddressBookScreen() {
         mutableStateOf(false)
     }
 
-    var showDropDown by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     if (showDialog) {
         AddressBookDialog(
-            item = selectedItem,
+            item = selectedItem ?: DBAddressBookItem(0L, "", ""),
             onCancel = { showDialog = false },
             onDismiss = { showDialog = false },
             onOk = {
@@ -52,14 +43,6 @@ fun AddressBookScreen() {
         )
     }
 
-    if (showDropDown) {
-        DropdownMenu(expanded = showDropDown, onDismissRequest = { showDropDown = false }) {
-            DropdownMenuItem(onClick = { /*TODO*/ }) {
-                Text("Delete")
-            }
-        }
-    }
-
     AddressBookItemList(
         addresses = items,
         onHeaderClick = {
@@ -67,11 +50,16 @@ fun AddressBookScreen() {
             showDialog = true
         },
         onItemClick = {
+
+        },
+        onEdit = {
             selectedItem = it
             showDialog = true
         },
-        onItemLongClick = {
-            showDropDown = true
+        onDelete = {
+            scope.launch {
+                vm.delete(it)
+            }
         }
     )
 

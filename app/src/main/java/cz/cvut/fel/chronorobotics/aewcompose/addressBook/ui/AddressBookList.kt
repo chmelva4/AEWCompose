@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package cz.cvut.fel.chronorobotics.aewcompose.addressBook.ui
 
 import androidx.compose.foundation.*
@@ -5,22 +7,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -28,8 +25,9 @@ import androidx.compose.ui.unit.dp
 import cz.cvut.fel.chronorobotics.aewcompose.R
 import cz.cvut.fel.chronorobotics.aewcompose.addressBook.data.DBAddressBookItem
 import cz.cvut.fel.chronorobotics.aewcompose.ui.theme.AEWComposeTheme
-import cz.cvut.fel.chronorobotics.aewcompose.util.toHslColor
 import kotlin.random.Random
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun dpToSp(dp: Dp) = with(LocalDensity.current) { dp.toSp() }
@@ -38,13 +36,13 @@ fun dpToSp(dp: Dp) = with(LocalDensity.current) { dp.toSp() }
 fun TextualAvatar(
     letter: String
 ) {
-    val r = rememberSaveable {
+    val r = rememberSaveable(letter) {
         Random.nextInt(100, 256)
     }
-    val g = rememberSaveable {
+    val g = rememberSaveable(letter) {
         Random.nextInt(100, 256)
     }
-    val b = rememberSaveable {
+    val b = rememberSaveable(letter) {
         Random.nextInt(100, 256)
     }
     Box(
@@ -75,32 +73,49 @@ fun TextualAvatarPreview() {
 
 @Composable
 fun AddressBookItem(
-    name: String,
-    addr: String,
+    item: DBAddressBookItem,
+    onItemClick: (item: DBAddressBookItem) -> Unit = {},
+    onItemEdit: (item: DBAddressBookItem) -> Unit = {},
+    onItemDelete: (item: DBAddressBookItem) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    var showDropDown by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     Surface(
         modifier = modifier
             .height(72.dp)
+            .combinedClickable(onLongClick = { showDropDown = true}) { onItemClick(item) }
     ) {
         Row(
             modifier = Modifier.padding(16.dp)
         ) {
-           TextualAvatar(name.substring(0, 1))
+           TextualAvatar(item.name.substring(0, 1))
            Spacer(modifier = Modifier.width(16.dp))
            Column(
                modifier = Modifier.fillMaxWidth(),
                verticalArrangement = Arrangement.SpaceBetween
            ) {
-               Text(modifier = Modifier.fillMaxWidth(), text = name, style = MaterialTheme.typography.body1)
+               Text(modifier = Modifier.fillMaxWidth(), text = item.name, style = MaterialTheme.typography.body1)
                Text(
                    modifier = Modifier.fillMaxWidth(),
-                   text = addr,
+                   text = item.ethereumAddress,
                    style = MaterialTheme.typography.caption,
                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
 
                )
            }
+        }
+        if (showDropDown) {
+            DropdownMenu(expanded = showDropDown, onDismissRequest = { showDropDown = false }) {
+                DropdownMenuItem(onClick = { onItemEdit(item) }) {
+                    Text("Edit")
+                }
+                DropdownMenuItem(onClick = { onItemDelete(item) }) {
+                    Text("Delete")
+                }
+            }
         }
     }
 }
@@ -109,7 +124,7 @@ fun AddressBookItem(
 @Composable
 fun AddressBookItemPreview() {
     AEWComposeTheme {
-        AddressBookItem("Jhon Doe", "0x4FED1fC4144c223aE3C1553be203cDFcbD38C581")
+        AddressBookItem(DBAddressBookItem(0,"Jhon Doe", "0x4FED1fC4144c223aE3C1553be203cDFcbD38C581"))
     }
 }
 
@@ -140,7 +155,8 @@ fun AddressBookListHeader(onHeaderClick: () -> Unit) {
 fun AddressBookItemList(
     addresses: List<DBAddressBookItem>,
     onItemClick: (item: DBAddressBookItem)-> Unit = {},
-    onItemLongClick: (item: DBAddressBookItem)-> Unit = {},
+    onEdit: (item: DBAddressBookItem)-> Unit = {},
+    onDelete: (item: DBAddressBookItem)-> Unit = {},
     onHeaderClick: ()-> Unit = {},
 ) {
     LazyColumn(
@@ -153,13 +169,12 @@ fun AddressBookItemList(
         }
         items(addresses) { address ->
             AddressBookItem(
-                name = address.name,
-                addr = address.ethereumAddress,
-                modifier = Modifier.combinedClickable(
-                    onClick = {onItemClick(address)},
-                    onLongClick = {onItemLongClick(address)},
-                )
+                item = address,
+                onItemClick = onItemClick,
+                onItemEdit = onEdit,
+                onItemDelete = onDelete,
             )
+
         }
     }
 }

@@ -21,21 +21,18 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AddressBookDialog(
-    item: DBAddressBookItem? = null,
+    item: DBAddressBookItem = DBAddressBookItem(0L, "", ""),
     onDismiss: ()-> Unit = {},
     onOk: (item: DBAddressBookItem)-> Unit = {},
     onCancel: ()-> Unit = {},
 ) {
-    val okText = if (item == null) "Insert" else "Edit"
+    val okText = if (item.id == 0L) "Insert" else "Edit"
 
-    val passedItem = item ?: DBAddressBookItem(0, "", "")
-
-    var nameText by rememberSaveable {
-        mutableStateOf(item?.name ?: "")
+    var name by rememberSaveable(item) {
+        mutableStateOf(item.name)
     }
-
-    var addrText: String by rememberSaveable {
-        mutableStateOf(item?.ethereumAddress ?: "")
+    var addr by rememberSaveable(item) {
+        mutableStateOf(item.ethereumAddress)
     }
 
 
@@ -43,7 +40,9 @@ fun AddressBookDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onOk(passedItem)
+                item.name = name
+                item.ethereumAddress = addr
+                onOk(item)
             })
             { Text(text = okText) }
         },
@@ -54,19 +53,17 @@ fun AddressBookDialog(
         text = {
             Column() {
                 TextField(
-                    value = nameText ,
+                    value = name ,
                     onValueChange = {
-                        nameText = it
-                        passedItem.name = it
+                        name = it
                                     },
                     label = { Text("Name")}
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 TextField(
-                    value = addrText ,
+                    value = addr ,
                     onValueChange = {
-                        addrText = it
-                        passedItem.ethereumAddress = it
+                        addr = it
                                     },
                     label = { Text("Addr")}
                 )
