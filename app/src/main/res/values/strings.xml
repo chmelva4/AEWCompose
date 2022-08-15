@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">AEWCompose</string>
     <string name="add_address_book_item">Add Address Book Item</string>
+    <string name="routeIdAddressBook">addressBook</string>
+    <string name="routeIdExchangeRates">exchangeRates</string>
+    <string name="title_addressBoook">Address Book</string>
+    <string name="title_axchangeRates">Exchange Rates</string>
 </resources>

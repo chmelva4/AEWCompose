@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cz.cvut.fel.chronorobotics.aewcompose.R
 import cz.cvut.fel.chronorobotics.aewcompose.addressBook.data.DBAddressBookItem
-import cz.cvut.fel.chronorobotics.aewcompose.ui.theme.AEWComposeTheme
+import cz.cvut.fel.chronorobotics.aewcompose.theme.AEWComposeTheme
 import kotlin.random.Random
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -124,7 +124,7 @@ fun AddressBookItem(
 @Composable
 fun AddressBookItemPreview() {
     AEWComposeTheme {
-        AddressBookItem(DBAddressBookItem(0,"Jhon Doe", "0x4FED1fC4144c223aE3C1553be203cDFcbD38C581"))
+        AddressBookItem(DBAddressBookItem(0, "0x4FED1fC4144c223aE3C1553be203cDFcbD38C581", "jhoon doe"))
     }
 }
 

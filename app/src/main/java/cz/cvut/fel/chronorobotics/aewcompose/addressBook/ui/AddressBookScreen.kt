@@ -4,12 +4,15 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.navigation.NavController
 import cz.cvut.fel.chronorobotics.aewcompose.addressBook.data.DBAddressBookItem
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun AddressBookScreen() {
+fun AddressBookScreen(
+    navController: NavController
+) {
 
     val vm = getViewModel<AddressBookViewModel>()
 

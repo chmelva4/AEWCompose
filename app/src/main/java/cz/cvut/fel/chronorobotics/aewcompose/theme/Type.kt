@@ -1,4 +1,4 @@
-package cz.cvut.fel.chronorobotics.aewcompose.ui.theme
+package cz.cvut.fel.chronorobotics.aewcompose.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

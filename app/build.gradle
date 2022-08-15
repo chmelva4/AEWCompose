@@ -62,6 +62,13 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    def nav_version = "2.5.1"
+
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
+
     // Koin main features for Android
     implementation "io.insert-koin:koin-android:$koin_version"
     // No more koin-android-viewmodel, koin-android-scope, koin-android-fragment
