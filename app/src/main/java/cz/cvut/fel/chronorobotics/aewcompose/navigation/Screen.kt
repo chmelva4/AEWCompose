@@ -23,6 +23,8 @@ sealed class Screen(
                 else -> AddressBook
             }
         }
+
+        fun getTopLevelScreens(): List<Screen> = listOf(AddressBook, ExchangeRates)
     }
 
 
